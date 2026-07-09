@@ -467,6 +467,6 @@ MySQL Database Server (3306)
 
 # Author
 
-**Prepared By:** Siddesh SB
+**Prepared By:** sak_shetty
 
-**Role:** DevOps Engineer / Java Full Stack Developer
+**Role:** DevOps Engineer
