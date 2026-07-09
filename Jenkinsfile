@@ -6,55 +6,69 @@ pipeline {
     }
 
     stages {
-        stage('build stage') {
+
+        stage('Build') {
             steps {
                 sh 'mvn clean package'
             }
             post {
                 success {
-                    echo "build success"
+                    echo 'Build Success'
                 }
                 failure {
-                    echo "build failure"
+                    echo 'Build Failed'
                 }
             }
         }
-        stage('build test') {
+
+        stage('Test') {
             steps {
                 sh 'mvn test'
             }
             post {
                 success {
-                    echo "test success"
+                    echo 'Test Success'
                 }
                 failure {
-                    echo "test failure"
+                    echo 'Test Failed'
                 }
             }
         }
-        stage("Run the spring application") {
-            steps { 
-                sh '''
-                    echo "Stopping existing Spring Boot application if running..."
-                    if pgrep -f spring_app_sak-0.0.1-SNAPSHOT.jar > /dev/null; then
-                        sudo pkill -f spring_app_sak-0.0.1-SNAPSHOT.jar
-                        echo "Application stopped."
-                    else
-                        echo "No existing application running."
-                    fi
 
-                    echo "Starting the Spring Boot application..."
-                    sudo java -jar target/spring_app_sak-0.0.1-SNAPSHOT.jar > /dev/null 2>&1 &
+        stage('Deploy Spring Boot') {
+            steps {
+                sh '''
+                echo "Stopping old application..."
+                sudo pkill -f spring_app_sak-0.0.1-SNAPSHOT.jar || true
+
+                sleep 5
+
+                echo "Starting application..."
+                nohup sudo java -jar target/spring_app_sak-0.0.1-SNAPSHOT.jar > spring.log 2>&1 &
+
+                sleep 15
+
+                echo "Checking application..."
+
+                if pgrep -f spring_app_sak-0.0.1-SNAPSHOT.jar > /dev/null
+                then
+                    echo "Spring Boot started successfully."
+                else
+                    echo "Spring Boot failed to start."
+                    cat spring.log
+                    exit 1
+                fi
                 '''
             }
         }
     }
+
     post {
         success {
-            echo "pipeline success1"
+            echo 'Pipeline completed successfully.'
         }
         failure {
-            echo "pipeline failure"
+            echo 'Pipeline failed.'
         }
     }
 }
