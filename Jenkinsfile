@@ -52,7 +52,7 @@ pipeline {
 
                 if pgrep -f spring_app_sak-0.0.1-SNAPSHOT.jar > /dev/null
                 then
-                    echo "Spring Boot started successfully."
+                    echo "Spring Boot started successfully1."
                 else
                     echo "Spring Boot failed to start."
                     cat spring.log
