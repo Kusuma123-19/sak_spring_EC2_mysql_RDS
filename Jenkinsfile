@@ -16,7 +16,7 @@ pipeline {
                     echo 'Build Success'
                 }
                 failure {
-                    echo 'Build Failed'
+                    echo 'Build Failed1'
                 }
             }
         }
